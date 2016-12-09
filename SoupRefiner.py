@@ -53,7 +53,8 @@ class SoupRefiner(object):
             elif link.startswith('/'):
                 complete_link = include_url + link
                 internal_links.add(complete_link)
-        return internal_links
+        # set object can't indexing, so transform set into list
+        return list(internal_links)
 
     def get_external_links(self):
         """
@@ -70,5 +71,29 @@ class SoupRefiner(object):
             if link.startswith('www') or link.startswith('http') or link.startswith('https'):
                 if exclude_url not in link:
                     external_links.add(link)
+        # set object can't indexing, so transform set into list
+        return list(external_links)
 
-        return external_links
+    def get_internal_imgs(self):
+        """
+        internal_imgs means image's url starts with '/'
+        :return: return a list of internal image url
+        """
+        soup = self.soup
+        internal_imgs = set()
+        for img in soup.findAll('img', src=True):
+            url = img.get('src')
+            if url.startswith('/'):
+                internal_imgs.add(url)
+        return list(internal_imgs)
+
+    def get_all_imgs(self):
+        """
+
+        :return:  return a list of all images' urls
+        """
+        soup = self.soup
+        all_imgs = set()
+        for img in soup.findAll('img', src=True):
+            all_imgs.add(img.get('src'))
+        return list(all_imgs)
